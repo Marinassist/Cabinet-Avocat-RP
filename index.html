@@ -229,6 +229,17 @@
 <script>
     // GESTION LOGIN
     function login() {
+    const user = document.getElementById('C.maddox').value;
+    const pass = document.getElementById('Maddox.2026').value;
+
+    // ICI TU CHOISIS TON NOM ET TON MOT DE PASSE
+    if(user === "TonNom" && pass === "TonMotDePasseSecret") {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('desktop').style.display = 'block';
+    } else {
+        alert("Identifiants incorrects. Accès refusé.");
+    }
+} {
         const user = document.getElementById('username').value;
         const pass = document.getElementById('password').value;
         if(user !== "" && pass !== "") {
