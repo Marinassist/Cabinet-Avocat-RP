@@ -44,303 +44,115 @@ async function loadClients() {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LawOS - Cabinet d'Avocats San Andreas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>LawOS | Cabinet d'Avocat San Andreas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --rose-pale: #FFF5F5;
-            --rose-accent: #E19898;
-            --gold: #D4AF37;
-            --dark: #2C2C2C;
-            --white: #ffffff;
-            --glass: rgba(255, 255, 255, 0.9);
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0; font-family: 'Montserrat', sans-serif;
-            background: url('https://images.unsplash.com/photo-1505664194779-8beaceb93744?q=80&w=2070') center/cover no-repeat;
-            height: 100vh; overflow: hidden;
-            background-attachment: fixed;
-        }
-
-        /* --- ECRAN DE LOGIN --- */
-        #login-screen {
-            position: fixed; inset: 0; background: var(--rose-pale);
-            display: flex; align-items: center; justify-content: center; z-index: 1000;
-        }
-
-        .login-card {
-            background: white; padding: 40px; border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid var(--gold);
-            text-align: center; width: 350px;
-        }
-
-        .login-card h1 { font-family: 'Playfair Display', serif; color: var(--rose-accent); }
-
-        /* --- DESKTOP --- */
+        :root { --rose-pale: #FFF5F5; --rose-accent: #E19898; --gold: #D4AF37; --dark: #2C2C2C; --glass: rgba(255, 255, 255, 0.9); }
+        body { margin: 0; font-family: 'Montserrat', sans-serif; background: url('https://images.unsplash.com/photo-1505664194779-8beaceb93744?q=80&w=2070') center/cover; height: 100vh; overflow: hidden; }
+        
+        /* LOGIN */
+        #login-screen { position: fixed; inset: 0; background: var(--rose-pale); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid var(--gold); text-align: center; width: 350px; }
+        
+        /* DESKTOP */
         #desktop { display: none; height: 100vh; position: relative; }
+        .dock { position: fixed; left: 20px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; background: var(--glass); padding: 20px; border-radius: 50px; border: 1px solid var(--rose-accent); backdrop-filter: blur(10px); }
+        .icon { width: 55px; height: 55px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; font-size: 24px; border: 2px solid transparent; }
+        .icon:hover { transform: scale(1.1); border-color: var(--gold); }
 
-        .dock {
-            position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
-            display: flex; flex-direction: column; gap: 15px;
-            background: var(--glass); padding: 20px; border-radius: 50px;
-            border: 1px solid var(--rose-accent); backdrop-filter: blur(10px);
-        }
-
-        .icon {
-            width: 55px; height: 55px; background: white; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.3s; border: 2px solid transparent; font-size: 24px;
-        }
-
-        .icon:hover { transform: scale(1.15); border-color: var(--gold); box-shadow: 0 0 15px var(--rose-accent); }
-
-        /* --- FENETRES --- */
-        .window {
-            position: absolute; top: 50px; left: 150px; width: 900px; height: 650px;
-            background: white; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-            display: none; flex-direction: column; border: 1px solid var(--rose-accent);
-            z-index: 10; resize: both; overflow: hidden;
-        }
-
-        .win-header {
-            background: linear-gradient(90deg, var(--rose-accent), #f3caca);
-            padding: 10px 20px; color: white; display: flex; justify-content: space-between;
-            font-family: 'Playfair Display', serif; cursor: move; align-items: center;
-        }
-
-        .win-body { padding: 25px; overflow-y: auto; height: calc(100% - 45px); }
-
-        /* --- UI ELEMENTS --- */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card { background: var(--rose-pale); padding: 15px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 15px; }
+        /* WINDOWS */
+        .window { position: absolute; top: 50px; left: 150px; width: 850px; height: 600px; background: white; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); display: none; flex-direction: column; border: 1px solid var(--rose-accent); z-index: 10; overflow: hidden; }
+        .win-header { background: linear-gradient(90deg, var(--rose-accent), #f3caca); padding: 10px 20px; color: white; display: flex; justify-content: space-between; font-family: 'Playfair Display', serif; }
+        .win-body { padding: 25px; overflow-y: auto; height: 100%; }
+        
+        .card { background: var(--rose-pale); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #eee; }
         button { background: var(--gold); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: 600; }
-        input, select, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; border-bottom: 2px solid var(--gold); padding: 10px; color: var(--rose-accent); }
-        td { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
-
-        .btn-close { cursor: pointer; font-weight: bold; font-size: 18px; }
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; text-transform: uppercase; font-weight: bold; }
-        .role-badge { background: var(--rose-accent); color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; }
+        input, select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; }
+        
+        /* RESTRICTION CLASSES */
+        .admin-only { display: none; } /* Caché par défaut */
     </style>
 </head>
 <body>
 
 <div id="login-screen">
     <div class="login-card">
-        <h1>LawOS v3.0</h1>
-        <p>Cabinet d'Avocats & Associés</p>
-        <input type="text" id="username" placeholder="Identifiant">
+        <h1 style="font-family:'Playfair Display'; color:var(--gold)">LawOS</h1>
+        <input type="text" id="username" placeholder="Identifiant (Ex: Avocat)">
         <input type="password" id="password" placeholder="Mot de passe">
-        <button onclick="login()" style="width: 100%; margin-top: 10px;">SE CONNECTER</button>
-        <p style="font-size: 10px; color: #888; margin-top: 20px;">Accès sécurisé réservé au personnel du Cabinet et clients enregistrés.</p>
+        <button onclick="login()" style="width:100%">CONNEXION</button>
     </div>
 </div>
 
 <div id="desktop">
     <div class="dock">
-        <div class="icon" title="Dossiers Clients" onclick="openWin('win-dossiers')">📂</div>
-        <div class="icon" title="Calculateur de Peines" onclick="openWin('win-calc')">⚖️</div>
-        <div class="icon" title="Comptabilité" onclick="openWin('win-compta')">💰</div>
-        <div class="icon" title="Casier Judiciaire Privé" onclick="openWin('win-casier')">🕵️</div>
-        <div class="icon" title="Code Pénal & Procédure" onclick="openWin('win-code')">📜</div>
-        <div class="icon" title="Collaborateurs & DOJ" onclick="openWin('win-collab')">🤝</div>
-        <div class="icon" title="Déconnexion" onclick="location.reload()" style="margin-top: 20px; background: #ffebeb;">📥</div>
+        <div class="icon admin-only" title="Dossiers" onclick="openWin('win-dossiers')">📂</div>
+        <div class="icon admin-only" title="Calculateur" onclick="openWin('win-calc')">⚖️</div>
+        <div class="icon admin-only" title="Comptabilité" onclick="openWin('win-compta')">💰</div>
+        <div class="icon admin-only" title="Casier Privé" onclick="openWin('win-casier')">🕵️</div>
+        <div class="icon" title="Espace Client" onclick="openWin('win-client')">👤</div>
+        <div class="icon" title="Déconnexion" onclick="location.reload()" style="background:#ffdbdb">❌</div>
     </div>
 
-    <div id="win-calc" class="window">
-        <div class="win-header"><span>⚖️ Calculateur de Peines - Justice Tools</span><span class="btn-close" onclick="closeWin('win-calc')">×</span></div>
+    <div id="win-client" class="window">
+        <div class="win-header"><span>👤 Mon Espace Personnel</span><span onclick="closeWin('win-client')" style="cursor:pointer">×</span></div>
         <div class="win-body">
+            <h2 id="client-welcome">Bienvenue</h2>
             <div class="card">
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="calc-inf" placeholder="Infraction">
-                    <input type="number" id="calc-fine" placeholder="Amende $">
-                    <input type="number" id="calc-time" placeholder="Prison (min)">
-                    <button onclick="addCharge()">Ajouter</button>
-                </div>
+                <h3>📄 Mes Contrats & Documents</h3>
+                <p id="client-docs">Aucun document déposé pour le moment.</p>
             </div>
-            <table>
-                <thead><tr><th>Chef d'inculpation</th><th>Amende</th><th>Temps</th><th>Action</th></tr></thead>
-                <tbody id="charge-list"></tbody>
-            </table>
-            <div class="card" style="margin-top: 20px; border-left: 5px solid var(--gold);">
-                <label>Facteur de réduction / aggravation :</label>
-                <select id="calc-mod" onchange="updateTotal()">
-                    <option value="1">Standard (100%)</option>
-                    <option value="0.5">Plaidoyer coupable / Coopération (-50%)</option>
-                    <option value="1.5">Récidive (+50%)</option>
-                    <option value="2">Outrage / Crime aggravé (+100%)</option>
-                </select>
-                <h2 id="calc-total">Total : 0 $ | 0 minutes</h2>
+            <div class="card">
+                <h3>💰 Mes Factures</h3>
+                <p id="client-bills">Aucune facture impayée.</p>
             </div>
         </div>
     </div>
 
-    <div id="win-dossiers" class="window">
-        <div class="win-header"><span>📂 Gestion des Dossiers Clients & Entreprises</span><span class="btn-close" onclick="closeWin('win-dossiers')">×</span></div>
+    <div id="win-calc" class="window admin-only">
+        <div class="win-header"><span>⚖️ Calculateur de Peines</span><span onclick="closeWin('win-calc')" style="cursor:pointer">×</span></div>
         <div class="win-body">
-            <div style="display:flex; justify-content: space-between; margin-bottom: 20px;">
-                <button onclick="alert('Formulaire de nouveau client')">➕ Nouveau Client / Entreprise</button>
-                <input type="text" placeholder="Rechercher un dossier..." style="width: 300px;">
-            </div>
-            <div class="grid">
-                <div class="card">
-                    <h3><span class="role-badge">CIVIL</span> Jean Dupont</h3>
-                    <p>ID: 452 | Tel: 555-0123</p>
-                    <hr>
-                    <p>📁 <strong>Sous-dossiers :</strong></p>
-                    <ul>
-                        <li><a href="#">Plainte LSPD - 12/02</a></li>
-                        <li><a href="#">Preuves Photos (Imgur)</a></li>
-                        <li><a href="#">Contrat de travail employé</a></li>
-                    </ul>
-                    <button class="btn-gold" style="font-size: 10px;">MODIFIER / SUPPRIMER</button>
-                </div>
-                <div class="card">
-                    <h3><span class="role-badge" style="background:var(--gold)">CORP</span> LTD Gasoline</h3>
-                    <p>Contact: Marcus S. | SIREN: 9982</p>
-                    <hr>
-                    <p>📁 <strong>Sous-dossiers :</strong></p>
-                    <ul>
-                        <li><a href="#">Statuts de l'entreprise</a></li>
-                        <li><a href="#">Audits de sécurité</a></li>
-                        <li><a href="#">Signature Contrats (2/2)</a></li>
-                    </ul>
-                </div>
-            </div>
+            <input type="text" id="crime" placeholder="Infraction">
+            <input type="number" id="fine" placeholder="Amende $">
+            <button onclick="addCrime()">Calculer</button>
+            <div id="total-calc" class="card" style="margin-top:20px">Total : 0 $</div>
         </div>
     </div>
-
-    <div id="win-compta" class="window">
-        <div class="win-header"><span>💰 Caisse Enregistreuse & Facturation</span><span class="btn-close" onclick="closeWin('win-compta')">×</span></div>
-        <div class="win-body">
-            <div class="grid">
-                <div class="card">
-                    <h4>Générer une Facture</h4>
-                    <select id="bill-client"><option>Jean Dupont</option><option>LTD Gasoline</option></select>
-                    <input type="text" id="bill-label" placeholder="Libellé de la prestation">
-                    <input type="number" id="bill-amount" placeholder="Montant en $">
-                    <button style="width:100%" onclick="addBill()">ENCAISSER & ENVOYER</button>
-                </div>
-                <div class="card">
-                    <h4>Journal de Caisse</h4>
-                    <div id="bill-history" style="font-size: 11px;"></div>
-                    <hr>
-                    <h3 id="bill-total">CA Total: 0 $</h3>
-                </div>
-            </div>
-        </div>
+    
     </div>
 
-    <div id="win-casier" class="window">
-        <div class="win-header"><span>🕵️ Casier Judiciaire Privé</span><span class="btn-close" onclick="closeWin('win-casier')">×</span></div>
-        <div class="win-body">
-            <div class="card" style="border-left: 5px solid red;">
-                <h4>Officier Brian Miller (LSPD)</h4>
-                <p><strong>Notes :</strong> Très rigide sur la procédure. Point faible : oublie souvent de notifier la présence d'un avocat avant l'interrogatoire. À utiliser pour vice de forme.</p>
-            </div>
-            <div class="card" style="border-left: 5px solid orange;">
-                <h4>Sandro "Le Serpent"</h4>
-                <p><strong>Notes :</strong> Client à haut risque. Ne jamais recevoir seul au cabinet. Paye toujours en liquide.</p>
-            </div>
-        </div>
-    </div>
+<script type="module">
+    // --- REMPLACE ICI AVEC TES CLES FIREBASE ---
+    const firebaseConfig = {
+      apiKey: "TON_API_KEY",
+      authDomain: "TON_DOMAINE.firebaseapp.com",
+      projectId: "TON_PROJET",
+      storageBucket: "TON_PROJET.appspot.com",
+      messagingSenderId: "...",
+      appId: "..."
+    };
 
-    <div id="win-collab" class="window">
-        <div class="win-header"><span>🤝 Espace Collaborateurs & DOJ</span><span class="btn-close" onclick="closeWin('win-collab')">×</span></div>
-        <div class="win-body">
-            <h3>Partage DOJ (Lecture Seule)</h3>
-            <div class="card" style="background:#eef2ff">
-                <p>Dossier partagé : <strong>Procès LTD vs Etat</strong> <button style="font-size:10px; padding:2px 5px;">Synchroniser</button></p>
-                <p style="font-size:11px;">Le DOJ a déposé : <em>Mandat_Perquisition.pdf</em></p>
-            </div>
-            <h3>Équipe du Cabinet</h3>
-            <table>
-                <tr><td>Sarah Lawson</td><td><span class="role-badge">Avocate Associée</span></td><td>Accès Total</td></tr>
-                <tr><td>Kevin Miller</td><td><span class="role-badge" style="background:gray">Stagiaire</span></td><td>Lecture Seule</td></tr>
-                <tr><td>Jessica B.</td><td><span class="role-badge" style="background:blue">Assistant Juridique</span></td><td>Gestion RDV/Caisse</td></tr>
-            </table>
-        </div>
-    </div>
-</div>
+    // Fonctions de navigation
+    window.openWin = function(id) { document.getElementById(id).style.display = 'flex'; }
+    window.closeWin = function(id) { document.getElementById(id).style.display = 'none'; }
 
-<script>
-    // GESTION LOGIN
-    function login() {
-    const user = document.getElementById('username').value;
-    const pass = document.getElementById('password').value;
+    window.login = function() {
+        const user = document.getElementById('username').value;
+        if(user === "") return alert("Entrez un nom");
 
-    // ICI TU CHOISIS TON NOM ET TON MOT DE PASSE
-    if(user === "C.maddox" && pass === "Maddox.2026") {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('desktop').style.display = 'block';
-    } else {
-        alert("Identifiants incorrects. Accès refusé.");
-    }
-} {
-        const user = document.getElementById('username').value;
-        const pass = document.getElementById('password').value;
-        if(user !== "" && pass !== "") {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('desktop').style.display = 'block';
+
+        if(user.toLowerCase() === "avocat") {
+            // Afficher tout pour l'avocat
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
+            document.getElementById('client-welcome').innerText = "Mode Administration - Bâtonnier";
         } else {
-            alert("Veuillez entrer vos identifiants.");
-        }
-    }
-
-    // GESTION FENETRES
-    function openWin(id) {
-        document.getElementById(id).style.display = 'flex';
-        // Petit z-index pour mettre au dessus
-        document.querySelectorAll('.window').forEach(w => w.style.zIndex = "10");
-        document.getElementById(id).style.zIndex = "20";
-    }
-    function closeWin(id) { document.getElementById(id).style.display = 'none'; }
-
-    // CALCULATEUR
-    let charges = [];
-    function addCharge() {
-        const inf = document.getElementById('calc-inf').value;
-        const fine = parseInt(document.getElementById('calc-fine').value) || 0;
-        const time = parseInt(document.getElementById('calc-time').value) || 0;
-        if(inf) {
-            charges.push({inf, fine, time});
-            renderCharges();
-        }
-    }
-    function renderCharges() {
-        const body = document.getElementById('charge-list');
-        body.innerHTML = charges.map((c, i) => `<tr><td>${c.inf}</td><td>${c.fine}$</td><td>${c.time}m</td><td><button onclick="removeCharge(${i})">X</button></td></tr>`).join('');
-        updateTotal();
-    }
-    function removeCharge(i) { charges.splice(i, 1); renderCharges(); }
-    function updateTotal() {
-        const mod = parseFloat(document.getElementById('calc-mod').value);
-        let tFine = charges.reduce((s, c) => s + c.fine, 0) * mod;
-        let tTime = charges.reduce((s, c) => s + c.time, 0) * mod;
-        document.getElementById('calc-total').innerText = `Total : ${tFine.toLocaleString()} $ | ${tTime} minutes`;
-    }
-
-    // COMPTABILITE
-    let totalCA = 0;
-    function addBill() {
-        const client = document.getElementById('bill-client').value;
-        const label = document.getElementById('bill-label').value;
-        const amount = parseInt(document.getElementById('bill-amount').value) || 0;
-        if(amount > 0) {
-            totalCA += amount;
-            const history = document.getElementById('bill-history');
-            history.innerHTML += `<div><strong>${amount}$</strong> - ${client} (${label})</div>`;
-            document.getElementById('bill-total').innerText = `CA Total: ${totalCA.toLocaleString()} $`;
-            document.getElementById('bill-label').value = "";
-            document.getElementById('bill-amount').value = "";
+            // Mode Client
+            document.getElementById('client-welcome').innerText = "Espace Client de " + user;
+            openWin('win-client');
         }
     }
 </script>
-
 </body>
 </html>
