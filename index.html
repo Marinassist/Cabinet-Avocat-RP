@@ -1,4 +1,46 @@
 <!DOCTYPE html>
+// --- CONFIGURATION FIREBASE ---
+// Remplace les valeurs ci-dessous par celles que Firebase t'a données à l'étape 1
+const firebaseConfig = {
+  apiKey: "AIzaSyAHWxt6e93DcDbnILgdfT9dStlM-aOitu4",
+  authDomain: "cabinet-avocat-rp.firebaseapp.com",
+  projectId: "cabinet-avocat-rp",
+  storageBucket: "cabinet-avocat-rp.firebasestorage.app",
+  messagingSenderId: "832001116280",
+  appId: "1:832001116280:web:9c9acb08b30d2f7453058d"
+};
+
+// Importation des modules Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// --- FONCTION POUR SAUVEGARDER UN CLIENT ---
+async function saveClientToDatabase(nom, role) {
+    try {
+        await addDoc(collection(db, "clients"), {
+            nom: nom,
+            role: role,
+            dateCreation: new Date()
+        });
+        alert("Client sauvegardé dans la base de données !");
+    } catch (e) {
+        console.error("Erreur d'ajout : ", e);
+    }
+}
+
+// --- FONCTION POUR CHARGER LES CLIENTS ---
+async function loadClients() {
+    const querySnapshot = await getDocs(collection(db, "clients"));
+    const list = document.getElementById('client-list');
+    list.innerHTML = "";
+    querySnapshot.forEach((doc) => {
+        const client = doc.data();
+        list.innerHTML += `<p><strong>${client.nom}</strong> (${client.role})</p>`;
+    });
+}
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
